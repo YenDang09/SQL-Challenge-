@@ -1,0 +1,57 @@
+-- SQL Code Challenge - Instructor: Scott Simption - Linkedln Cource 
+-- Challenge 1: In the Restaurant
+
+-- Create Invitations for a party
+SELECT FirstName, LastName, Email FROM Customers ORDER BY LastName;
+
+-- Sign a customer up for loyalty program 
+INSERT INTO Customers(FirstName, LastName, Email, Address, City, State, Phone, Birthday)
+ VAlUES("Anna", "Smith", "asmith@kinetecoinc.com", "479 Lapis Dr", "Memphis", "IN","(555) 555-1212", "1973-07-21");
+
+SELECT * FROM Customers ORDER BY CustomerID DESC; -- double check the input 
+
+-- Update Customer personal Information
+SELECT * FROM Customers WHERE FirstName = "Taylor" AND LastName = "Jenkins"; 
+UPDATE Customers SET 
+	Addressress = "74 Pine Str.", City = "NewYork", State = "NY"
+WHERE CustomerID = "26"; 
+
+-- Remove a customer record
+SELECT * FROM Customers WHERE FirstName = "Taylor" AND LastName = "Jenkins"; 
+DELETE FROM Customers WHERE CustomerID = "4"; 
+
+-- Look up Reservation
+SELECT c.FirstName, c.LastName, r.Date, r.PartySize 
+FROM Reservations as r JOIN Customers as c ON c.CustomerID = r.CustomerID
+WHERE c.LastName LIKE "Ste%n";
+
+-- Take Reservation
+INSERT INTO Customers (FirstName, LastName, Email, Phone)
+VALUES("Sam", "McAdams","smac@kinetecoinc.com", "(555) 555-1232"); 
+SELECT * FROM Customers WHERE Email = "smac@kinetecoinc.com"; -- CustomerID = 102
+INSERT INTO Reservations(CustomerID, Date, PartySize)
+VALUES("102", "2020-06-14 18:00:00", "5"); 
+SELECT c.FirstName, c.LastName, c.Email, r.Date, r.PartySize -- Recheck
+FROM Customers as c JOIN Reservations as r ON c.CustomerID = r.CustomerID
+WHERE c.CustomerID = 102
+
+-- Take delivery order to customer
+SELECT * FROM Customers WHERE Address = "6939 Elka Place" AND LastName = "Hundey"; -- find out customerid is 70
+INSERT INTO Orders(CustomerID,OrderDate) VALUES(70, "2020-03-20 14:00:00");  -- Insert order to order table
+SELECT * FROM Orders WHERE CustomerID = 70 ORDER BY OrderDate DESC; -- Find out orderId = 1001
+SELECT * FROM Dishes as d JOIN OrdersDishes as o ON d.DishID = o.DishID
+WHERE O.OrderID = 1001; 
+SELECT SUM(d.Price) FROM Dishes as d JOIN OrdersDishes as o -- get the price of order 
+ON d.DishID = o.DishID WHERE o.DishID = ;
+
+-- Track customer favorite Dish
+SELECT * FROM Customers WHERE FirstName = "Cleo" AND LastName = "Goldwater"; -- customerid = 42
+UPDATE Customers SET FavoriteDish = (SELECT DishID FROM Dishes WHERE Name = "Quinoa Salmon Salad") 
+WHERE CustomerID = 42; 
+
+-- Prepare top 5 customers cupons
+SELECT COUNT(o.OrderID) as OrderCount, c.FirstName, c.LastName, c.Email
+FROM Orders as o JOIN Customers as c ON o.CustomerID = c.CustomerID
+GROUP BY o.CustomerID
+ORDER BY 1 DESC
+LiMIT 5; 
